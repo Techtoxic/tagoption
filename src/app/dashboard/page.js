@@ -261,17 +261,17 @@ function TradePanel({ tradeType, setTradeType, autoMode, setAutoMode, stake, set
         <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
           {[['even','Even','#00c97b','▶'],['odd','Odd','#ff4757','⚠']].map(([type,label,color,icon]) => (
             <button key={type} onClick={() => placeTrade(type)}
-              style={{ padding:'13px 14px', borderRadius:10, border:'none', cursor:'pointer', background:color, color:'#fff', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-              <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                <span style={{ fontSize:16 }}>{icon}</span>
+              style={{ padding:'9px 12px', borderRadius:9, border:'none', cursor:'pointer', background:color, color:'#fff', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                <span style={{ fontSize:13 }}>{icon}</span>
                 <div>
-                  <div style={{ fontSize:14, fontWeight:800 }}>{label}</div>
-                  <div style={{ fontSize:10, opacity:0.9 }}>95.22%</div>
+                  <div style={{ fontSize:12, fontWeight:800 }}>{label}</div>
+                  <div style={{ fontSize:9, opacity:0.9 }}>95.22%</div>
                 </div>
               </div>
               <div style={{ textAlign:'right' }}>
-                <div style={{ fontSize:14, fontWeight:800 }}>{payout} USD</div>
-                <div style={{ fontSize:10, opacity:0.9 }}>95.22%</div>
+                <div style={{ fontSize:12, fontWeight:800 }}>{payout} USD</div>
+                <div style={{ fontSize:9, opacity:0.9 }}>95.22%</div>
               </div>
             </button>
           ))}
@@ -281,9 +281,9 @@ function TradePanel({ tradeType, setTradeType, autoMode, setAutoMode, stake, set
         <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
           {[['over','Over 4','#00c97b'],['under','Under 5','#ff4757']].map(([type,label,color]) => (
             <button key={type} onClick={() => placeTrade(type)}
-              style={{ padding:'13px 14px', borderRadius:10, border:'none', cursor:'pointer', background:color, color:'#fff', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-              <div><div style={{ fontSize:14, fontWeight:800 }}>{label}</div><div style={{ fontSize:10, opacity:0.9 }}>95.22%</div></div>
-              <div style={{ textAlign:'right' }}><div style={{ fontSize:14, fontWeight:800 }}>{payout} USD</div></div>
+              style={{ padding:'9px 12px', borderRadius:9, border:'none', cursor:'pointer', background:color, color:'#fff', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <div><div style={{ fontSize:12, fontWeight:800 }}>{label}</div><div style={{ fontSize:9, opacity:0.9 }}>95.22%</div></div>
+              <div style={{ textAlign:'right' }}><div style={{ fontSize:12, fontWeight:800 }}>{payout} USD</div></div>
             </button>
           ))}
         </div>
