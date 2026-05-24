@@ -62,3 +62,9 @@ input { color: var(--text-primary); }
   nav { padding: 12px 16px !important; }
   section { padding-left: 16px !important; padding-right: 16px !important; }
 }
+
+/* Prevent horizontal overflow globally */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
