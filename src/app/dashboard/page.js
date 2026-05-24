@@ -152,7 +152,7 @@ function DigitRow({ ticks, mockTicks, size }) {
   return (
     <div style={{
       display:'flex', alignItems:'flex-start', justifyContent:'space-around',
-      padding:'8px 8px 4px', background:'#0b0d14',
+      padding:'5px 4px 3px', background:'#0b0d14',
       borderTop:'1px solid rgba(255,255,255,0.06)', flexShrink:0
     }}>
       {Array.from({ length:10 }, (_, d) => (
@@ -565,9 +565,9 @@ export default function Dashboard() {
         </div>
 
         {/* ══ MOBILE LAYOUT ══ */}
-        <div className="m-layout" style={{ flex:1, flexDirection:'column', overflow:'hidden', minHeight:0 }}>
+        <div className="m-layout" style={{ flex:1, flexDirection:'column', overflow:'hidden', minHeight:0, width:'100%' }}>
           {/* chart toolbar */}
-          <div style={{ display:'flex', alignItems:'center', gap:6, padding:'0 8px', height:36, background:'#0b0d14', borderBottom:'1px solid rgba(255,255,255,0.06)', flexShrink:0 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:6, padding:'0 6px', height:34, background:'#0b0d14', borderBottom:'1px solid rgba(255,255,255,0.06)', flexShrink:0 }}>
             <div style={{ position:'relative', flexShrink:0 }} ref={mobileMarketDropRef}>
               <button onClick={() => setShowMarketDrop(d=>!d)} style={{ display:'flex', alignItems:'center', gap:4, border:'none', background:'transparent', cursor:'pointer', color:'#e2e8f0' }}>
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8892a4" strokeWidth="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
@@ -583,13 +583,13 @@ export default function Dashboard() {
             <span style={{ padding:'2px 7px', borderRadius:4, background:'#141828', color:'#8892a4', fontSize:10, fontWeight:600 }}>100%</span>
           </div>
           {/* canvas */}
-          <div style={{ flex:1, position:'relative', overflow:'hidden', minHeight:0 }}>
+          <div style={{ flex:1, position:'relative', overflow:'hidden', minHeight:0, width:'100%' }}>
             <div style={{ position:'absolute', left:6, bottom:8, display:'flex', flexDirection:'column', gap:3, zIndex:10 }}>
               {['+','−'].map(s => <button key={s} style={{ width:22, height:22, borderRadius:5, border:'1px solid rgba(255,255,255,0.1)', background:'#141828', color:'#e2e8f0', fontSize:15, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', lineHeight:1 }}>{s}</button>)}
             </div>
             <PriceChart ticks={ticks} mockTicks={mockTicks}/>
           </div>
-          <DigitRow ticks={ticks} mockTicks={mockTicks} size={36}/>
+          <DigitRow ticks={ticks} mockTicks={mockTicks} size={30}/>
         </div>
 
         {/* ══ MOBILE BOTTOM ══ */}
