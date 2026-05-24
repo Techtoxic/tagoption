@@ -3,29 +3,27 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 
 const TICKER_ASSETS = [
-  { sym: 'BTC', price: '43,256', change: '+2.34%', up: true, color: '#f7931a' },
-  { sym: 'ETH', price: '2,284', change: '+1.87%', up: true, color: '#627eea' },
-  { sym: 'AAPL', price: '178.32', change: '-0.45%', up: false, color: '#555' },
-  { sym: 'XAU', price: '2,024', change: '+0.89%', up: true, color: '#ffd700' },
-  { sym: 'TSLA', price: '248.90', change: '+3.21%', up: true, color: '#cc0000' },
-  { sym: 'EUR', price: '1.0892', change: '+0.12%', up: true, color: '#4a90d9' },
-  { sym: 'SOL', price: '98.42', change: '+5.67%', up: true, color: '#9945ff' },
-  { sym: 'GBP', price: '1.2654', change: '-0.08%', up: false, color: '#012169' },
+  { sym: 'BTC', price: '43,256', change: '+2.34%', up: true, bg: '#f7931a' },
+  { sym: 'ETH', price: '2,284', change: '+1.87%', up: true, bg: '#627eea' },
+  { sym: 'AAPL', price: '178.32', change: '-0.45%', up: false, bg: '#888' },
+  { sym: 'XAU', price: '2,024', change: '+0.89%', up: true, bg: '#ffd700' },
+  { sym: 'TSLA', price: '248.90', change: '+3.21%', up: true, bg: '#cc2200' },
+  { sym: 'EUR', price: '1.0892', change: '+0.12%', up: true, bg: '#4a90d9' },
+  { sym: 'SOL', price: '98.42', change: '+5.67%', up: true, bg: '#9945ff' },
+  { sym: 'GBP', price: '1.2654', change: '-0.08%', up: false, bg: '#012169' },
 ]
 
-const COLORS = ['#f7931a','#627eea','#555','#ffd700','#cc0000','#4a90d9','#9945ff','#012169']
-
 function Ticker() {
-  const tripled = [...TICKER_ASSETS, ...TICKER_ASSETS, ...TICKER_ASSETS]
+  const set = [...TICKER_ASSETS, ...TICKER_ASSETS, ...TICKER_ASSETS]
   return (
-    <div className="overflow-hidden" style={{ borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', background: 'var(--bg-secondary)' }}>
-      <div className="ticker-track flex gap-8 py-3 w-max">
-        {tripled.map((a, i) => (
-          <div key={i} className="flex items-center gap-2.5 px-2 whitespace-nowrap">
-            <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: COLORS[i % COLORS.length] }}>{a.sym[0]}</span>
-            <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{a.sym}</span>
-            <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>${a.price}</span>
-            <span className="text-xs font-bold" style={{ color: a.up ? 'var(--green)' : 'var(--red)' }}>{a.change}</span>
+    <div style={{ overflow: 'hidden', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', background: 'var(--bg-secondary)' }}>
+      <div className="ticker-track" style={{ display: 'flex', gap: 32, padding: '10px 0', width: 'max-content', alignItems: 'center' }}>
+        {set.map((a, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap', padding: '0 4px' }}>
+            <span style={{ width: 28, height: 28, borderRadius: '50%', background: a.bg, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{a.sym[0]}</span>
+            <span style={{ fontSize: 13, fontWeight: 600 }}>{a.sym}</span>
+            <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>${a.price}</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: a.up ? 'var(--green)' : 'var(--red)' }}>{a.change}</span>
           </div>
         ))}
       </div>
@@ -33,72 +31,64 @@ function Ticker() {
   )
 }
 
-const LIVE_TRADES = [
-  { name: 'Tom', dir: 'Lower', amt: '$50', color: 'var(--red)' },
-  { name: 'Mike', dir: 'Lower', amt: '$200', color: 'var(--red)' },
-  { name: 'Rachel', dir: 'Lower', amt: '$10', color: 'var(--red)' },
-  { name: 'Lisa', dir: 'Lower', amt: '$200', color: 'var(--red)' },
-  { name: 'Julia', dir: 'Lower', amt: '$25', color: 'var(--red)' },
-  { name: 'Nina', dir: 'Higher', amt: '$20', color: 'var(--green)' },
-]
+const LIVE_TRADE_NAMES = ['Tom','Mike','Rachel','Lisa','Julia','Nina','Sarah','Alex','David','Maria','James','Emma']
 
-function HeroChart() {
+function HeroSection() {
   const canvasRef = useRef(null)
   const pts = useRef([])
   const animRef = useRef(null)
   const [price, setPrice] = useState(43450.28)
+  const [trades, setTrades] = useState([
+    { name: 'Tom', dir: 'Lower', amt: '$50' },
+    { name: 'Mike', dir: 'Lower', amt: '$200' },
+    { name: 'Rachel', dir: 'Lower', amt: '$10' },
+    { name: 'Lisa', dir: 'Lower', amt: '$200' },
+    { name: 'Julia', dir: 'Lower', amt: '$25' },
+    { name: 'Nina', dir: 'Higher', amt: '$20' },
+  ])
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     let base = 43243
-    for (let i = 0; i < 100; i++) { base += (Math.random() - 0.48) * 120; pts.current.push(base) }
+    for (let i = 0; i < 80; i++) { base += (Math.random() - 0.47) * 120; pts.current.push(base) }
 
     function draw() {
       const W = canvas.width, H = canvas.height
       ctx.clearRect(0, 0, W, H)
-      const data = pts.current.slice(-100)
-      const mn = Math.min(...data), mx = Math.max(...data)
-      const range = mx - mn || 1
-      const pad = { t: 16, b: 20, l: 8, r: 8 }
+      const data = pts.current.slice(-80)
+      const mn = Math.min(...data), mx = Math.max(...data), range = mx - mn || 1
+      const pad = { t: 12, b: 12, l: 8, r: 8 }
       const cW = W - pad.l - pad.r, cH = H - pad.t - pad.b
       const toX = i => pad.l + (i / (data.length - 1)) * cW
       const toY = v => pad.t + cH - ((v - mn) / range) * cH
 
-      // Fill gradient
       ctx.beginPath()
-      data.forEach((p, i) => { i === 0 ? ctx.moveTo(toX(i), toY(p)) : ctx.lineTo(toX(i), toY(p)) })
+      data.forEach((p, i) => i === 0 ? ctx.moveTo(toX(i), toY(p)) : ctx.lineTo(toX(i), toY(p)))
       ctx.lineTo(toX(data.length - 1), pad.t + cH)
       ctx.lineTo(toX(0), pad.t + cH)
       ctx.closePath()
       const grad = ctx.createLinearGradient(0, pad.t, 0, pad.t + cH)
-      grad.addColorStop(0, 'rgba(0,201,123,0.2)')
+      grad.addColorStop(0, 'rgba(0,201,123,0.22)')
       grad.addColorStop(1, 'rgba(0,201,123,0)')
-      ctx.fillStyle = grad
-      ctx.fill()
+      ctx.fillStyle = grad; ctx.fill()
 
-      // Line
       ctx.beginPath()
-      data.forEach((p, i) => { i === 0 ? ctx.moveTo(toX(i), toY(p)) : ctx.lineTo(toX(i), toY(p)) })
-      ctx.strokeStyle = 'var(--green)'
-      ctx.lineWidth = 2
-      ctx.stroke()
+      data.forEach((p, i) => i === 0 ? ctx.moveTo(toX(i), toY(p)) : ctx.lineTo(toX(i), toY(p)))
+      ctx.strokeStyle = '#00c97b'; ctx.lineWidth = 2; ctx.stroke()
 
-      // End dot
       const lx = toX(data.length - 1), ly = toY(data[data.length - 1])
-      ctx.beginPath(); ctx.arc(lx, ly, 4, 0, Math.PI * 2)
-      ctx.fillStyle = '#fff'; ctx.fill()
-      ctx.beginPath(); ctx.arc(lx, ly, 4, 0, Math.PI * 2)
-      ctx.strokeStyle = 'var(--green)'; ctx.lineWidth = 2; ctx.stroke()
+      ctx.beginPath(); ctx.arc(lx, ly, 3.5, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill()
 
-      // Current label
-      ctx.fillStyle = 'rgba(30,34,53,0.9)'
-      ctx.beginPath(); ctx.roundRect(lx - 44, ly - 13, 88, 22, 4); ctx.fill()
-      ctx.fillStyle = '#e2e8f0'; ctx.font = 'bold 11px DM Sans, sans-serif'
-      ctx.textAlign = 'center'; ctx.fillText('$' + data[data.length-1].toFixed(2), lx, ly + 4)
+      // price label
+      const label = '$' + data[data.length - 1].toFixed(2)
+      ctx.fillStyle = 'rgba(30,34,53,0.88)'
+      ctx.beginPath(); ctx.roundRect(lx - 44, ly - 12, 90, 20, 3); ctx.fill()
+      ctx.fillStyle = '#cdd5e0'; ctx.font = 'bold 10px DM Sans, sans-serif'
+      ctx.textAlign = 'center'; ctx.fillText(label, lx, ly + 4)
 
-      base += (Math.random() - 0.48) * 120; pts.current.push(base)
+      base += (Math.random() - 0.47) * 120; pts.current.push(base)
       if (pts.current.length > 300) pts.current.shift()
       setPrice(base)
       animRef.current = requestAnimationFrame(draw)
@@ -107,95 +97,83 @@ function HeroChart() {
     return () => cancelAnimationFrame(animRef.current)
   }, [])
 
-  return (
-    <div className="rounded-2xl overflow-hidden flex-1" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', minWidth: 0 }}>
-      {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
-        <div className="flex items-center gap-3">
-          <span className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold" style={{ background: '#f7931a22', color: '#f7931a' }}>B</span>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-sm">BTC/USD</span>
-              <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full" style={{ background: 'rgba(0,201,123,0.15)', color: 'var(--green)' }}>
-                <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: 'var(--green)' }}></span>LIVE
-              </span>
-            </div>
-            <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>Bitcoin / US Dollar</div>
-          </div>
-        </div>
-        <div className="text-right">
-          <div className="text-xl font-bold" style={{ color: 'var(--green)' }}>${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-          <div className="text-xs" style={{ color: 'var(--green)' }}>+0.45%</div>
-        </div>
-      </div>
-      <canvas ref={canvasRef} width={600} height={200} className="w-full" style={{ display: 'block' }} />
-    </div>
-  )
-}
-
-function LiveTradesPanel() {
-  const [trades, setTrades] = useState(LIVE_TRADES)
-  const names = ['Tom','Mike','Rachel','Lisa','Julia','Nina','Sarah','Alex','David','Maria','James','Emma']
   useEffect(() => {
     const interval = setInterval(() => {
-      const name = names[Math.floor(Math.random() * names.length)]
-      const up = Math.random() > 0.5
+      const name = LIVE_TRADE_NAMES[Math.floor(Math.random() * LIVE_TRADE_NAMES.length)]
+      const up = Math.random() > 0.45
       const amounts = ['$10','$25','$50','$100','$200']
       const amt = amounts[Math.floor(Math.random() * amounts.length)]
-      setTrades(prev => [{ name, dir: up ? 'Higher' : 'Lower', amt, color: up ? 'var(--green)' : 'var(--red)' }, ...prev.slice(0,5)])
-    }, 2000)
+      setTrades(prev => [{ name, dir: up ? 'Higher' : 'Lower', amt }, ...prev.slice(0, 5)])
+    }, 2200)
     return () => clearInterval(interval)
   }, [])
 
   return (
-    <div className="rounded-2xl overflow-hidden w-52 shrink-0" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-      <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: '1px solid var(--border)' }}>
-        <span className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>LIVE TRADES</span>
-        <span className="w-2 h-2 rounded-full pulse-dot" style={{ background: 'var(--green)' }}></span>
-      </div>
-      <div className="overflow-hidden" style={{ maxHeight: 260 }}>
-        {trades.map((t, i) => (
-          <div key={i} className="flex items-center justify-between px-4 py-2.5" style={{ borderBottom: '1px solid var(--border)', opacity: i === 0 ? 1 : 1 - i * 0.12 }}>
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style={{ background: t.color === 'var(--green)' ? 'rgba(0,201,123,0.15)' : 'rgba(255,71,87,0.15)', color: t.color }}>{t.name[0]}</div>
-              <div>
-                <div className="text-sm font-medium">{t.name}</div>
-                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>just now</div>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 200px', gap: 16, alignItems: 'stretch', maxWidth: 860, margin: '0 auto' }}>
+      {/* Chart card */}
+      <div style={{ borderRadius: 16, overflow: 'hidden', background: 'var(--bg-card)', border: '1px solid var(--border)', minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 18px', borderBottom: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ width: 34, height: 34, borderRadius: 10, background: '#f7931a22', color: '#f7931a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 14 }}>B</span>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontWeight: 600, fontSize: 13 }}>BTC/USD</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, padding: '2px 8px', borderRadius: 999, background: 'rgba(0,201,123,0.13)', color: 'var(--green)' }}>
+                  <span className="pulse-dot" style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--green)', display: 'inline-block' }}></span>LIVE
+                </span>
               </div>
-            </div>
-            <div className="text-right">
-              <div className="text-sm font-bold">{t.amt}</div>
-              <div className="text-xs font-medium" style={{ color: t.color }}>{t.dir === 'Higher' ? '↑' : '↓'} {t.dir}</div>
+              <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>Bitcoin / US Dollar</div>
             </div>
           </div>
-        ))}
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--green)' }}>${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+            <div style={{ fontSize: 11, color: 'var(--green)' }}>+0.45%</div>
+          </div>
+        </div>
+        <canvas ref={canvasRef} width={600} height={200} style={{ display: 'block', width: '100%' }} />
       </div>
-      <Link href="/register" className="block text-center py-3 text-sm font-semibold transition-all hover:opacity-80" style={{ color: 'var(--blue)', borderTop: '1px solid var(--border)' }}>
-        Start Trading
-      </Link>
+
+      {/* Live trades card */}
+      <div style={{ borderRadius: 16, overflow: 'hidden', background: 'var(--bg-card)', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', borderBottom: '1px solid var(--border)' }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: 0.5 }}>LIVE TRADES</span>
+          <span className="pulse-dot" style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--green)', display: 'inline-block' }}></span>
+        </div>
+        <div style={{ flex: 1, overflow: 'hidden' }}>
+          {trades.map((t, i) => {
+            const up = t.dir === 'Higher'
+            return (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 14px', borderBottom: '1px solid rgba(255,255,255,0.04)', opacity: Math.max(0.3, 1 - i * 0.13) }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: up ? 'rgba(0,201,123,0.15)' : 'rgba(255,71,87,0.15)', color: up ? 'var(--green)' : 'var(--red)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{t.name[0]}</div>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 600 }}>{t.name}</div>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>just now</div>
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 12, fontWeight: 700 }}>{t.amt}</div>
+                  <div style={{ fontSize: 10, color: up ? 'var(--green)' : 'var(--red)' }}>{up ? '↑' : '↓'} {t.dir}</div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+        <Link href="/register" style={{ display: 'block', textAlign: 'center', padding: '12px', fontSize: 13, fontWeight: 600, color: 'var(--blue)', borderTop: '1px solid var(--border)', textDecoration: 'none' }}>
+          Start Trading
+        </Link>
+      </div>
     </div>
   )
 }
 
 const FEATURES = [
-  { title: 'Blazing Fast', desc: 'Trades execute in under 1 second. Zero lag, zero requotes.', icon: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-  )},
-  { title: 'Fully Secured', desc: '256-bit SSL encryption and segregated client accounts.', icon: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-  )},
-  { title: '100+ Markets', desc: 'Forex, crypto, stocks, indices, commodities — all in one place.', icon: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-  )},
-  { title: 'No Hidden Fees', desc: 'Zero fees on deposits and withdrawals. What you see is what you get.', icon: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 100 4h4a2 2 0 110 4H8"/><line x1="12" y1="6" x2="12" y2="18"/></svg>
-  )},
-  { title: 'Trade Anywhere', desc: 'Responsive web app works perfectly on any device, any screen.', icon: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-  )},
-  { title: '24/7 Support', desc: 'Real human support around the clock via live chat and email.', icon: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-  )},
+  { title: 'Blazing Fast', desc: 'Trades execute in under 1 second. Zero lag, zero requotes.', svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> },
+  { title: 'Fully Secured', desc: '256-bit SSL encryption and segregated client accounts.', svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> },
+  { title: '100+ Markets', desc: 'Forex, crypto, stocks, indices, commodities — all in one place.', svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> },
+  { title: 'No Hidden Fees', desc: 'Zero fees on deposits and withdrawals. What you see is what you get.', svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 100 4h4a2 2 0 110 4H8"/><line x1="12" y1="6" x2="12" y2="18"/></svg> },
+  { title: 'Trade Anywhere', desc: 'Responsive web app works perfectly on any device, any screen.', svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> },
+  { title: '24/7 Support', desc: 'Real human support around the clock via live chat and email.', svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> },
 ]
 
 const REVIEWS = [
@@ -209,59 +187,60 @@ const REVIEWS = [
 
 export default function LandingPage() {
   return (
-    <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', color: 'var(--text-primary)' }}>
+    <div style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', minHeight: '100vh' }}>
+
       {/* NAV */}
-      <nav className="flex items-center justify-between px-8 py-4 sticky top-0 z-50" style={{ background: 'rgba(11,13,20,0.94)', backdropFilter: 'blur(16px)', borderBottom: '1px solid var(--border)' }}>
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--blue)' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 40px', position: 'sticky', top: 0, zIndex: 50, background: 'rgba(11,13,20,0.95)', backdropFilter: 'blur(16px)', borderBottom: '1px solid var(--border)' }}>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', color: 'inherit' }}>
+          <div style={{ width: 30, height: 30, borderRadius: 8, background: 'var(--blue)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
           </div>
-          <span className="font-bold text-lg">TagOption</span>
+          <span style={{ fontWeight: 700, fontSize: 17 }}>TagOption</span>
         </Link>
-        <div className="hidden md:flex items-center gap-8">
-          <a href="#features" className="text-sm transition-colors hover:text-white" style={{ color: 'var(--text-secondary)' }}>Features</a>
-          <a href="#steps" className="text-sm transition-colors hover:text-white" style={{ color: 'var(--text-secondary)' }}>How It Works</a>
-          <a href="#reviews" className="text-sm transition-colors hover:text-white" style={{ color: 'var(--text-secondary)' }}>Reviews</a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+          {[['Features','#features'],['How It Works','#steps'],['Reviews','#reviews']].map(([label, href]) => (
+            <a key={label} href={href} style={{ fontSize: 14, color: 'var(--text-secondary)', textDecoration: 'none' }}>{label}</a>
+          ))}
         </div>
-        <div className="flex items-center gap-3">
-          <Link href="/login" className="text-sm font-medium px-4 py-2 rounded-lg transition-colors hover:text-white" style={{ color: 'var(--text-secondary)' }}>Log in</Link>
-          <Link href="/register" className="text-sm font-semibold px-5 py-2.5 rounded-xl transition-all hover:opacity-90 hover:scale-105" style={{ background: 'var(--blue)', color: '#fff' }}>Get Started</Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <Link href="/login" style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-secondary)', textDecoration: 'none', padding: '8px 14px' }}>Log in</Link>
+          <Link href="/register" style={{ fontSize: 13, fontWeight: 600, color: '#fff', background: 'var(--blue)', textDecoration: 'none', padding: '9px 20px', borderRadius: 10 }}>Get Started</Link>
         </div>
       </nav>
 
       {/* HERO */}
-      <section className="relative px-6 pt-20 pb-10 text-center overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 90% 60% at 50% -5%, rgba(59,123,255,0.12), transparent)' }} />
-        <div className="max-w-3xl mx-auto relative">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm mb-8" style={{ background: 'rgba(59,123,255,0.1)', border: '1px solid rgba(59,123,255,0.25)', color: 'var(--blue)' }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      <section style={{ textAlign: 'center', padding: '72px 24px 40px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(59,123,255,0.13), transparent)' }} />
+        <div style={{ position: 'relative', maxWidth: 700, margin: '0 auto' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '7px 18px', borderRadius: 999, fontSize: 13, marginBottom: 28, background: 'rgba(59,123,255,0.1)', border: '1px solid rgba(59,123,255,0.25)', color: 'var(--blue)' }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             Over 1 million traders and counting
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
+          <h1 style={{ fontSize: 'clamp(40px, 6vw, 62px)', fontWeight: 800, lineHeight: 1.1, marginBottom: 20, letterSpacing: -1 }}>
             Trading Made Easy,{' '}
             <span style={{ background: 'linear-gradient(135deg, #3b7bff, #00c97b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Trade Smart</span>
           </h1>
-          <p className="text-lg mb-10 max-w-xl mx-auto" style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+          <p style={{ fontSize: 17, color: 'var(--text-secondary)', marginBottom: 36, lineHeight: 1.65, maxWidth: 480, margin: '0 auto 36px' }}>
             Trade 100+ assets worldwide with lightning execution and up to 95% returns. Start with as little as $10.
           </p>
-          <div className="flex items-center justify-center gap-4 mb-10 flex-wrap">
-            <Link href="/register" className="flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold transition-all hover:opacity-90 hover:scale-105" style={{ background: 'var(--blue)', color: '#fff' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, marginBottom: 32, flexWrap: 'wrap' }}>
+            <Link href="/register" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '13px 28px', borderRadius: 12, fontWeight: 600, fontSize: 15, background: 'var(--blue)', color: '#fff', textDecoration: 'none' }}>
               Get Started — It&#39;s Free →
             </Link>
-            <Link href="/dashboard" className="flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold transition-all hover:bg-white/5" style={{ border: '1px solid var(--border)', color: 'var(--text-primary)' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <Link href="/dashboard" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '13px 24px', borderRadius: 12, fontWeight: 600, fontSize: 15, border: '1px solid var(--border)', color: 'var(--text-primary)', textDecoration: 'none' }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               Try Demo
             </Link>
           </div>
-          <div className="flex items-center justify-center gap-4 flex-wrap">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
             {[
-              [<svg key="a" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>, '<1s execution'],
-              [<svg key="b" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 100 4h4a2 2 0 110 4H8"/><line x1="12" y1="6" x2="12" y2="18"/></svg>, 'Up to 95% payout'],
-              [<svg key="c" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>, 'Bank-level security'],
-              [<svg key="d" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>, 'Zero fees'],
+              [<svg key="a" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>, '<1s execution'],
+              [<svg key="b" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 100 4h4a2 2 0 110 4H8"/><line x1="12" y1="6" x2="12" y2="18"/></svg>, 'Up to 95% payout'],
+              [<svg key="c" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>, 'Bank-level security'],
+              [<svg key="d" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>, 'Zero fees'],
             ].map(([icon, text], i) => (
-              <div key={i} className="flex items-center gap-2 text-sm px-4 py-2 rounded-full" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>{icon}</span><span>{text}</span>
+              <div key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '7px 16px', borderRadius: 999, fontSize: 13, background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
+                {icon} {text}
               </div>
             ))}
           </div>
@@ -271,36 +250,33 @@ export default function LandingPage() {
       {/* TICKER */}
       <Ticker />
 
-      {/* HERO CHART + LIVE TRADES */}
-      <section className="max-w-5xl mx-auto px-6 py-16">
-        <div className="flex gap-5 items-stretch" style={{ minHeight: 320 }}>
-          <HeroChart />
-          <LiveTradesPanel />
-        </div>
+      {/* CHART + LIVE TRADES */}
+      <section style={{ maxWidth: 1000, margin: '0 auto', padding: '60px 24px 60px' }}>
+        <HeroSection />
       </section>
 
       {/* FEATURES */}
-      <section id="features" className="py-20" style={{ background: 'var(--bg-secondary)' }}>
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-4">
-            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--blue)' }}>Platform</span>
+      <section id="features" style={{ background: 'var(--bg-secondary)', padding: '80px 24px', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
+        <div style={{ maxWidth: 960, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 12 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--blue)' }}>Platform</span>
           </div>
-          <div className="text-center mb-14">
-            <h2 className="text-4xl font-bold mb-4">Built for serious traders</h2>
+          <div style={{ textAlign: 'center', marginBottom: 52 }}>
+            <h2 style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 700 }}>Built for serious traders</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-5">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
             {FEATURES.map(f => (
-              <div key={f.title} className="p-6 rounded-2xl group transition-all hover:scale-[1.02]" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5 transition-all" style={{ background: 'rgba(59,123,255,0.12)', color: 'var(--blue)', border: '1px solid rgba(59,123,255,0.2)' }}>
-                  {f.icon}
+              <div key={f.title} style={{ padding: '24px 22px', borderRadius: 16, background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+                <div style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(59,123,255,0.12)', border: '1px solid rgba(59,123,255,0.2)', color: 'var(--blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                  {f.svg}
                 </div>
-                <h3 className="font-semibold text-base mb-2">{f.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{f.desc}</p>
+                <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 6 }}>{f.title}</div>
+                <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{f.desc}</div>
               </div>
             ))}
           </div>
-          <div className="text-center mt-10">
-            <Link href="/register" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all hover:opacity-90" style={{ background: 'var(--blue)', color: '#fff' }}>
+          <div style={{ textAlign: 'center', marginTop: 40 }}>
+            <Link href="/register" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '11px 24px', borderRadius: 10, fontWeight: 600, fontSize: 14, background: 'var(--blue)', color: '#fff', textDecoration: 'none' }}>
               Get started
             </Link>
           </div>
@@ -308,24 +284,25 @@ export default function LandingPage() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section id="steps" className="py-20">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <span className="text-xs font-semibold uppercase tracking-widest mb-3 block" style={{ color: 'var(--blue)' }}>Three steps to your first trade</span>
-            <h2 className="text-4xl font-bold"></h2>
+      <section id="steps" style={{ padding: '80px 24px' }}>
+        <div style={{ maxWidth: 800, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 10 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--blue)' }}>Three steps to your first trade</span>
           </div>
-          <div className="grid md:grid-cols-3 gap-8 relative">
-            {/* connector line */}
-            <div className="hidden md:block absolute top-8 left-[calc(16.67%+1rem)] right-[calc(16.67%+1rem)] h-px" style={{ background: 'var(--border)' }}></div>
+          <div style={{ textAlign: 'center', marginBottom: 56 }}>
+            <h2 style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 700 }}></h2>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 40, position: 'relative' }}>
+            <div style={{ position: 'absolute', top: 30, left: '20%', right: '20%', height: 1, background: 'var(--border)' }}></div>
             {[
               { n: '1', title: 'Sign Up', desc: 'Create your free account in 30 seconds. No documents needed to start.' },
               { n: '2', title: 'Deposit', desc: 'Fund with M-Pesa, crypto, or cards. Start from just $10.' },
               { n: '3', title: 'Trade & Earn', desc: 'Choose an asset, predict the direction, and earn up to 95% profit.' },
             ].map(s => (
-              <div key={s.n} className="text-center relative">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 relative z-10" style={{ background: 'var(--bg-card)', border: '2px solid var(--blue)', color: 'var(--blue)' }}>{s.n}</div>
-                <h3 className="font-semibold text-lg mb-2">{s.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{s.desc}</p>
+              <div key={s.n} style={{ textAlign: 'center', position: 'relative' }}>
+                <div style={{ width: 60, height: 60, borderRadius: '50%', border: '2px solid var(--blue)', background: 'var(--bg-primary)', color: 'var(--blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 700, margin: '0 auto 20px', position: 'relative', zIndex: 2 }}>{s.n}</div>
+                <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 8 }}>{s.title}</div>
+                <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{s.desc}</div>
               </div>
             ))}
           </div>
@@ -333,38 +310,38 @@ export default function LandingPage() {
       </section>
 
       {/* STATS */}
-      <section style={{ background: 'var(--bg-secondary)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
-        <div className="max-w-4xl mx-auto px-6 py-14">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[['1M+','Active traders'],['$2B+','Total traded'],['150+','Countries'],['4.9/5','User rating']].map(([v, l]) => (
-              <div key={l} className="text-center">
-                <div className="text-4xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>{v}</div>
-                <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>{l}</div>
-              </div>
-            ))}
-          </div>
+      <div style={{ borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', background: 'var(--bg-secondary)' }}>
+        <div style={{ maxWidth: 800, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', padding: '48px 24px' }}>
+          {[['1M+','Active traders'],['$2B+','Total traded'],['150+','Countries'],['4.9/5','User rating']].map(([v, l]) => (
+            <div key={l} style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 800, marginBottom: 4 }}>{v}</div>
+              <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{l}</div>
+            </div>
+          ))}
         </div>
-      </section>
+      </div>
 
       {/* REVIEWS */}
-      <section id="reviews" className="py-20">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-4">
-            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--blue)' }}>Wall of love</span>
+      <section id="reviews" style={{ padding: '80px 24px' }}>
+        <div style={{ maxWidth: 980, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 10 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--blue)' }}>Wall of love</span>
           </div>
-          <div className="text-center mb-14">
-            <h2 className="text-4xl font-bold">What traders say</h2>
+          <div style={{ textAlign: 'center', marginBottom: 52 }}>
+            <h2 style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 700 }}>What traders say</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-5">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
             {REVIEWS.map(r => (
-              <div key={r.name} className="p-6 rounded-2xl transition-all hover:scale-[1.02]" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-                <div className="flex gap-1 mb-4">{[...Array(5)].map((_, i) => <span key={i} style={{ color: '#fbbf24' }}>★</span>)}</div>
-                <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--text-secondary)' }}>&quot;{r.text}&quot;</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: 'var(--blue)', color: '#fff' }}>{r.initials}</div>
+              <div key={r.name} style={{ padding: '22px', borderRadius: 16, background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+                <div style={{ display: 'flex', gap: 3, marginBottom: 14 }}>
+                  {[...Array(5)].map((_, i) => <span key={i} style={{ color: '#fbbf24', fontSize: 15 }}>★</span>)}
+                </div>
+                <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: 18 }}>&quot;{r.text}&quot;</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--blue)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700 }}>{r.initials}</div>
                   <div>
-                    <div className="text-sm font-semibold">{r.name}</div>
-                    <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>{r.loc}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600 }}>{r.name}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>{r.loc}</div>
                   </div>
                 </div>
               </div>
@@ -374,15 +351,15 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20" style={{ background: 'var(--bg-secondary)', borderTop: '1px solid var(--border)' }}>
-        <div className="max-w-2xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-4">Ready to start earning?</h2>
-          <p className="mb-10 text-lg" style={{ color: 'var(--text-secondary)' }}>Join a million traders worldwide. Create your free account in under 60 seconds.</p>
-          <div className="flex items-center justify-center gap-4 flex-wrap">
-            <Link href="/register" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:opacity-90 hover:scale-105" style={{ background: 'var(--blue)', color: '#fff' }}>
+      <section style={{ background: 'var(--bg-secondary)', borderTop: '1px solid var(--border)', padding: '80px 24px', textAlign: 'center' }}>
+        <div style={{ maxWidth: 600, margin: '0 auto' }}>
+          <h2 style={{ fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 700, marginBottom: 14 }}>Ready to start earning?</h2>
+          <p style={{ fontSize: 16, color: 'var(--text-secondary)', marginBottom: 40 }}>Join a million traders worldwide. Create your free account in under 60 seconds.</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, flexWrap: 'wrap' }}>
+            <Link href="/register" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '14px 32px', borderRadius: 12, fontWeight: 600, fontSize: 15, background: 'var(--blue)', color: '#fff', textDecoration: 'none' }}>
               Create Free Account →
             </Link>
-            <Link href="/dashboard" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:bg-white/5" style={{ border: '1px solid var(--border)', color: 'var(--text-primary)' }}>
+            <Link href="/dashboard" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '14px 24px', borderRadius: 12, fontWeight: 600, fontSize: 15, border: '1px solid var(--border)', color: 'var(--text-primary)', textDecoration: 'none' }}>
               Try Demo
             </Link>
           </div>
@@ -391,47 +368,44 @@ export default function LandingPage() {
 
       {/* FOOTER */}
       <footer style={{ background: 'var(--bg-primary)', borderTop: '1px solid var(--border)' }}>
-        {/* App download banner */}
-        <div className="max-w-6xl mx-auto px-6 py-12">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 p-8 rounded-2xl" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'var(--blue)' }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        {/* App download */}
+        <div style={{ maxWidth: 1000, margin: '0 auto', padding: '40px 24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24, padding: '28px 32px', borderRadius: 16, background: 'var(--bg-card)', border: '1px solid var(--border)', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: 'var(--blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
               </div>
               <div>
-                <div className="font-bold text-lg">TagOption</div>
-                <div className="text-sm font-medium" style={{ color: 'var(--blue)' }}>Android App Available</div>
+                <div style={{ fontWeight: 700, fontSize: 16 }}>TagOption</div>
+                <div style={{ fontSize: 12, color: 'var(--blue)', fontWeight: 500 }}>Android App Available</div>
               </div>
             </div>
             <div>
-              <div className="font-bold text-lg mb-1">Trade on the go</div>
-              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Download the TagOption app. Get a better trading experience on your mobile device.</p>
+              <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4 }}>Trade on the go</div>
+              <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Download the TagOption app. Get a better trading experience on your mobile device.</div>
             </div>
-            <div className="shrink-0">
-              <Link href="#" className="flex items-center gap-3 px-5 py-3 rounded-xl font-semibold text-sm transition-all hover:opacity-90" style={{ background: 'var(--blue)', color: '#fff' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 15.34l1.595 2.762a.5.5 0 01-.866.5l-1.613-2.795A9.97 9.97 0 0112 17a9.97 9.97 0 01-4.64-1.193L5.748 18.6a.5.5 0 01-.866-.5l1.595-2.762A9.972 9.972 0 012 8h20a9.972 9.972 0 01-4.477 7.34zM8.5 4.5a1 1 0 11-2 0 1 1 0 012 0zm9 0a1 1 0 11-2 0 1 1 0 012 0z"/></svg>
+            <div style={{ flexShrink: 0 }}>
+              <Link href="#" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 10, fontWeight: 600, fontSize: 13, background: 'var(--blue)', color: '#fff', textDecoration: 'none' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 15.34l1.595 2.762a.5.5 0 01-.866.5l-1.613-2.795A9.97 9.97 0 0112 17a9.97 9.97 0 01-4.64-1.193L5.748 18.6a.5.5 0 01-.866-.5l1.595-2.762A9.972 9.972 0 012 8h20a9.972 9.972 0 01-4.477 7.34z"/></svg>
                 Download App
               </Link>
-              <div className="text-xs mt-2 text-center" style={{ color: 'var(--text-muted)' }}>Secure · Lightweight · Push Alerts</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center', marginTop: 6 }}>Secure · Lightweight · Push Alerts</div>
             </div>
           </div>
         </div>
-
-        <div className="max-w-6xl mx-auto px-6 pb-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4" style={{ borderTop: '1px solid var(--border)', paddingTop: 24 }}>
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'var(--blue)' }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
-              </div>
-              <span className="font-bold">TagOption</span>
-            </Link>
-            <div className="flex items-center gap-6 text-sm" style={{ color: 'var(--text-secondary)' }}>
-              <a href="#" className="hover:text-white transition-colors">Privacy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms</a>
-              <a href="#" className="hover:text-white transition-colors">Support</a>
+        <div style={{ maxWidth: 1000, margin: '0 auto', padding: '20px 24px 32px', borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', color: 'inherit' }}>
+            <div style={{ width: 26, height: 26, borderRadius: 7, background: 'var(--blue)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
             </div>
-            <div className="text-sm" style={{ color: 'var(--text-muted)' }}>© 2026 TagOption</div>
+            <span style={{ fontWeight: 700 }}>TagOption</span>
+          </Link>
+          <div style={{ display: 'flex', gap: 24 }}>
+            {['Privacy','Terms','Support'].map(l => (
+              <a key={l} href="#" style={{ fontSize: 13, color: 'var(--text-secondary)', textDecoration: 'none' }}>{l}</a>
+            ))}
           </div>
+          <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>© 2026 TagOption</div>
         </div>
       </footer>
     </div>
